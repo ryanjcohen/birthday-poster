@@ -2,7 +2,7 @@ from flask import Flask
 from slackeventsapi import SlackEventAdapter
 from slack_sdk.web import WebClient
 import json, re
-from config.py import slack_oauth_token, slack_bot_token
+from config import slack_oauth_token, slack_bot_token
 
 app = Flask(__name__)
 
