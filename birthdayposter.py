@@ -1,4 +1,5 @@
 import csv
+from emojiselector import EmojiSelector
 from datetime import datetime
 
 class BirthdayPoster:
@@ -45,9 +46,11 @@ class BirthdayPoster:
 
     def create_birthday_list(self, month_name, birthdays):
         list_elements = []
+        emoji_selector = EmojiSelector()
         birthdays = sorted(birthdays.items(), key=lambda x:x[1])
 
         for birthday in birthdays:
-            list_elements.append(f'\u2022 {birthday[0]}: {month_name} {birthday[1]}')
+            emoji = emoji_selector.get_emoji()
+            list_elements.append(f'\u2022 {birthday[0]}: {month_name} {birthday[1]} {emoji}')
         
         return list_elements
