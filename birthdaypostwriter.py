@@ -1,26 +1,59 @@
 import csv
 from emojiselector import EmojiSelector
 from datetime import datetime
+from string import Template
 
-class BirthdayPoster:
+class BirthdayPostWriter:
+    draft_greeting = '*Here\'s a draft birthday post for next month:*'
     post_beginning = 'Hey Band! Happy Birthday to the following folks this month:'
     post_ending = '_If your birthday is in the month of {month} and your name is not on this list above, please DM {admin}!_'
     post_no_birthdays = 'Hey Band! There are no recorded birthdays this month!\n_If your birthday is in the month of {month}, please DM {admin}!_'
+    message_template = Template('''
+        [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "$greeting"
+                }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "$post"
+                }
+            }
+	    ]
+    ''')
 
     def __init__(self, file):
         self.file = file
 
-    def generate_post(self, month, admin):
+    def generate_message(self, month, admin):
         birthdays = self.read_birthdays(month)
         
         month_name = datetime.strptime(str(month), '%m').strftime('%B')
         birthday_list = self.create_birthday_list(month_name, birthdays)
 
         if len(birthday_list) == 0:
-            return BirthdayPoster.post_no_birthdays.format(month=month_name, admin=admin)
+            return BirthdayPostWriter.post_no_birthdays.format(month=month_name, admin=admin)
         
-        return BirthdayPoster.post_beginning + '\n\n' + '\n'.join(birthday_list) + '\n\n' + \
-            BirthdayPoster.post_ending.format(month=month_name, admin=admin)
+        draft_post = '\n\n'.join([
+            BirthdayPostWriter.post_beginning,
+            '\n'.join(birthday_list),
+            BirthdayPostWriter.post_ending.format(month=month_name, admin=admin)
+        ])
+
+        return BirthdayPostWriter.message_template.substitute(
+            dict(
+                greeting = BirthdayPostWriter.draft_greeting,
+                post = draft_post
+            )
+        )
 
     def read_birthdays(self, month):
         date_format = '%m/%d/%Y'
