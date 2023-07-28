@@ -1,4 +1,5 @@
 import csv
+import re
 from emojiselector import EmojiSelector
 from datetime import datetime
 from string import Template
@@ -34,9 +35,9 @@ class BirthdayPostWriter:
         self.file = file
 
     def generate_message(self, month, admin):
-        birthdays = self.read_birthdays(month)
-        
         month_name = datetime.strptime(str(month), '%m').strftime('%B')
+        birthdays = self.read_birthdays(month_name)
+        
         birthday_list = self.create_birthday_list(month_name, birthdays)
 
         if len(birthday_list) == 0:
@@ -56,7 +57,7 @@ class BirthdayPostWriter:
         )
 
     def read_birthdays(self, month):
-        date_format = '%m/%d/%Y'
+        date_pattern = r"([A-Za-z]+)\s+(\d+)"
         current_birthdays = {}
 
         with open(self.file, 'r') as birthday_file:
@@ -64,16 +65,17 @@ class BirthdayPostWriter:
             next(reader)
             
             for row in reader:
-                name = row[0]
-                birthday = row[1]
+                first_name = row[0]
+                last_name = row[1]
+                birthday = row[2]
 
-                try: 
-                    birthday_datetime = datetime.strptime(birthday, date_format)
-                    if birthday_datetime.month == month:
-                        current_birthdays[name] = birthday_datetime.day
-                except ValueError:
-                    # TODO: logging
+                matches = re.findall(date_pattern, birthday)
+                if len(matches) != 1:
+                    print(f"Cannot read birthday for {first_name} {last_name}: '{birthday}'")
                     continue
+
+                if matches[0][0] == month:
+                    current_birthdays[f"{first_name} {last_name}"] = int(matches[0][1])
         
         return current_birthdays
 
