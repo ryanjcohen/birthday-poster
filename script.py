@@ -1,20 +1,38 @@
-from slack_sdk.web import WebClient
-from config import bot_user_oauth_token, admin_name, output_id, csv_file
-from birthdaypostwriter import BirthdayPostWriter
+import config
+from argparse import ArgumentParser
+from postwriter.csvpostwriter import CsvPostWriter
 from datetime import datetime
+from postwriter.drivepostwriter import DrivePostWriter, DriveReadingError
+from slack_sdk.web import WebClient
+
+def create_birthday_poster():
+    if args.gdrive:
+        return DrivePostWriter(config.birthday_sheet_id, config.range, config.token_path, 
+                               config.credentials_path)
+    else:
+        return CsvPostWriter(config.csv_file)
 
 def send_draft_message():
-  birthday_poster = BirthdayPostWriter(csv_file)
-  bot_user_slack_client = WebClient(token=bot_user_oauth_token) 
+    birthday_poster = create_birthday_poster()
+    bot_user_slack_client = WebClient(token=config.bot_user_oauth_token) 
 
-  # Create draft birthday post message for next month
-  next_month = (datetime.now().month % 12) + 1
-  message = birthday_poster.generate_message(next_month, admin_name)
-  bot_user_slack_client.chat_postMessage(
-    channel=output_id,
-    blocks=message,
-    text=BirthdayPostWriter.draft_greeting
-  )
+    # Create draft birthday post message for next month
+    next_month = (datetime.now().month % 12) + 1
+
+    try:
+        message = birthday_poster.generate_message(next_month, config.admin_name)
+    except DriveReadingError as err:
+        print(err.message)
+        return
+  
+    bot_user_slack_client.chat_postMessage(
+        channel=config.output_id,
+        blocks=message,
+        text=birthday_poster.draft_greeting
+    )
 
 if __name__ == "__main__":
-  send_draft_message()
+    parser = ArgumentParser()
+    parser.add_argument('-gdrive', action='store_true')
+    args = parser.parse_args()
+    send_draft_message()
