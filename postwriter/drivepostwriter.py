@@ -20,9 +20,9 @@ class DrivePostWriter(BirthdayPostWriter):
 
     def __read_credentials(self):
         creds = None
-        # The file token.json stores the user's access and refresh tokens, and is
-        # created automatically when the authorization flow completes for the first
-        # time.
+        # A file found at self.token_path is expected to store the user's access and 
+        # refresh tokens, and is created automatically when the authorization flow 
+        # completes for the firsttime.
         if os.path.exists(self.token_path):
             creds = Credentials.from_authorized_user_file(self.token_path, self.SCOPES)
         # If there are no (valid) credentials available, let the user log in.
@@ -51,7 +51,7 @@ class DrivePostWriter(BirthdayPostWriter):
                 .execute()
             )
             values = result.get("values", [])
-            
+
             if not values:
                 raise DriveReadingError('No values found in Google Sheet. Check sheet configuration.')
 
