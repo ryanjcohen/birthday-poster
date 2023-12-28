@@ -1,6 +1,6 @@
 import os.path
 from dataclasses import dataclass
-from postwriter.birthdaypostwriter import BirthdayPostWriter
+from postwriter.birthdaypostwriter import BirthdayPostWriter, BirthdayReadingError
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -55,10 +55,10 @@ class DrivePostWriter(BirthdayPostWriter):
             values = result.get("values", [])
 
             if not values:
-                raise DriveReadingError('No values found in Google Sheet. Check sheet configuration.')
+                raise BirthdayReadingError('No values found in Google Sheet. Check sheet configuration.')
 
         except HttpError as err:
-            raise DriveReadingError(f'Unable to read Google Sheet data. Error code: {err.code}, reason: {err.reason}')
+            raise BirthdayReadingError(f'Unable to read Google Sheet data. Error code: {err.code}, reason: {err.reason}')
 
         current_birthdays = {}
         for row in values:
@@ -74,11 +74,6 @@ class DrivePostWriter(BirthdayPostWriter):
                 print(f"Missing birthday data for {first_name} {last_name}")
 
         return current_birthdays
-
-class DriveReadingError(Exception):
-    def __init__(self, message=None):
-        self.message = message
-        super().__init__(message)
 
 @dataclass
 class DriveSheetColumns():

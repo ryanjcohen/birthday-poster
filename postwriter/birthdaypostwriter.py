@@ -75,3 +75,8 @@ class BirthdayPostWriter(ABC):
             list_elements.append(f'\u2022 {birthday[0]}: {month_name} {birthday[1]} {emoji}')
         
         return list_elements
+
+class BirthdayReadingError(Exception):
+    def __init__(self, message=None):
+        self.message = message
+        super().__init__(message)

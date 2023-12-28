@@ -1,8 +1,9 @@
 import config
 from argparse import ArgumentParser
-from postwriter.csvpostwriter import CsvPostWriter
 from datetime import datetime
-from postwriter.drivepostwriter import DrivePostWriter, DriveReadingError, DriveSheetColumns
+from postwriter.birthdaypostwriter import BirthdayReadingError
+from postwriter.csvpostwriter import CsvPostWriter
+from postwriter.drivepostwriter import DrivePostWriter, DriveSheetColumns
 from slack_sdk.web import WebClient
 
 def create_birthday_poster():
@@ -23,7 +24,7 @@ def send_draft_message():
 
     try:
         message = birthday_poster.generate_message(next_month, config.admin_name)
-    except DriveReadingError as err:
+    except BirthdayReadingError as err:
         print(err.message)
         return
   
