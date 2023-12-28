@@ -1,4 +1,5 @@
 import os.path
+from dataclasses import dataclass
 from postwriter.birthdaypostwriter import BirthdayPostWriter
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -8,11 +9,12 @@ from googleapiclient.errors import HttpError
 
 class DrivePostWriter(BirthdayPostWriter):
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-    def __init__(self, sheet_id, range, token_path, credentials_path):
+    def __init__(self, sheet_id, range, token_path, credentials_path, column_indices):
         self.sheet_id = sheet_id
         self.range = range
         self.token_path = token_path
         self.credentials_path = credentials_path
+        self.column_indices = column_indices
 
     def read_birthdays_for_month(self, month):
         creds = self.__read_credentials()
@@ -58,15 +60,18 @@ class DrivePostWriter(BirthdayPostWriter):
         except HttpError as err:
             raise DriveReadingError(f'Unable to read Google Sheet data. Error code: {err.code}, reason: {err.reason}')
 
-        # TODO: make column indices configurable? Expectation: first name: 0th colunn, last name: 1st, birthday: 2nd
         current_birthdays = {}
         for row in values:
-            if len(row) >= 3:
-                date = self.read_birthday_date(row[2], row[0], row[1])
+            if len(row) > self.column_indices.get_max_column_idx():
+                first_name = row[self.column_indices.first_name_col_idx]
+                last_name = row[self.column_indices.last_name_col_idx]
+                birthday = row[self.column_indices.birthday_col_idx]
+                
+                date = self.read_birthday_date(birthday, first_name, last_name)
                 if date is not None and date.month == month:
-                    current_birthdays[f"{row[0]} {row[1]}"] = int(date.day)
+                    current_birthdays[f"{first_name} {last_name}"] = int(date.day)
             else:
-                print(f"Missing birthday data for {row[0]} {row[1]}")
+                print(f"Missing birthday data for {first_name} {last_name}")
 
         return current_birthdays
 
@@ -74,3 +79,12 @@ class DriveReadingError(Exception):
     def __init__(self, message=None):
         self.message = message
         super().__init__(message)
+
+@dataclass
+class DriveSheetColumns():
+    first_name_col_idx: int
+    last_name_col_idx: int
+    birthday_col_idx: int
+
+    def get_max_column_idx(self):
+        return max([self.first_name_col_idx, self.last_name_col_idx, self.birthday_col_idx])

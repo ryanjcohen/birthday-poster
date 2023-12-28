@@ -2,13 +2,17 @@ bot_user_oauth_token = ''
 admin_name = ''
 output_id = ''
 
-# configuration for reading birthdays from csv file
+#---CONFIGURATION FOR READING BIRTHDAYS FROM CSV FILE---#
 csv_file = ''
 
-# configuration for reading birthdays from Google Drive
+#---CONFIGURATION FOR READING BIRTHDAYS FROM GOOGLE DRIVE---#
 birthday_sheet_id = ''
 range = ''
 # path to file for storing access and refresh tokens for Drive API
 token_path = ''
 # path to directory storing credentials for use with Drive API
 credentials_path = ''
+# indices of columns within the specified range that contain first names, last names, and birthdays
+first_name_col_idx = -1
+last_name_col_idx = -1
+birthday_col_idx = -1

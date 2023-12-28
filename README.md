@@ -17,6 +17,7 @@ Basic slackbot that sends a draft birthday post for the next month to a configur
       - `range`: the group of cells containing names and birthdays. See the [Google Drive API docs on Cells](https://developers.google.com/sheets/api/guides/concepts#cell) for more information
       - `token_path`: the path to the file storing access and refresh tokens for use with the Drive API. If this file does not exist, tokens will be saved at this path after sucessfully logging in
       - `credentials_path`: the path to the file containing access credentials. This file should be downloaded from the Google Cloud console after creating a Google Cloud project. See the "Prerequisites" and "Set up your environment" sections of the [Python quick start docs](https://developers.google.com/sheets/api/quickstart/python) for instructions
+      - `first_name_col_idx`,`last_name_col_idx`, `birthday_col_idx`: the indices of the columns within the specified range that contain first names, last names, and birthdays, respectively
 
 ## Running the script
 - To generate a birthday post for next month using a configured csv file, run

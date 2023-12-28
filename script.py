@@ -2,13 +2,15 @@ import config
 from argparse import ArgumentParser
 from postwriter.csvpostwriter import CsvPostWriter
 from datetime import datetime
-from postwriter.drivepostwriter import DrivePostWriter, DriveReadingError
+from postwriter.drivepostwriter import DrivePostWriter, DriveReadingError, DriveSheetColumns
 from slack_sdk.web import WebClient
 
 def create_birthday_poster():
     if args.gdrive:
+        column_indices = DriveSheetColumns(int(config.first_name_col_idx), int(config.last_name_col_idx),
+                                           int(config.birthday_col_idx))
         return DrivePostWriter(config.birthday_sheet_id, config.range, config.token_path, 
-                               config.credentials_path)
+                               config.credentials_path, column_indices)
     else:
         return CsvPostWriter(config.csv_file)
 
