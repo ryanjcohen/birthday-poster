@@ -2,17 +2,17 @@ import random
 
 class EmojiSelector:
     emoji_list = [
-        ':party_meow:',
+        ':cupcake:',
+        ':star-struck:',
         ':confetti_ball:',
-        ':party_blob:',
         ':partying_face:',
-        ':party_parrot:',
+        ':star2:',
         ':birthday:',
         ':balloon:',
         ':cake:',
         ':tada:',
         ':sparkles:',
-        ':fast_parrot:'
+        ':gift:'
     ]
 
     def __init__(self):

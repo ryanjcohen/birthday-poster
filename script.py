@@ -30,8 +30,7 @@ def send_draft_message():
   
     bot_user_slack_client.chat_postMessage(
         channel=config.output_id,
-        blocks=message,
-        text=birthday_poster.draft_greeting
+        text=message
     )
 
 if __name__ == "__main__":

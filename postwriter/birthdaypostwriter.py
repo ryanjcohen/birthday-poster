@@ -7,30 +7,11 @@ from string import Template
 
 class BirthdayPostWriter(ABC):
     draft_greeting = '*Here\'s a draft birthday post for next month:*'
+    divider = '===================='
     post_beginning = 'Hey Band! Happy Birthday to the following folks this month:'
     post_ending = '_If your birthday is in the month of {month} and your name is not on this list above, please DM {admin}!_'
     post_no_birthdays = 'Hey Band! There are no recorded birthdays this month!\n_If your birthday is in the month of {month}, please DM {admin}!_'
-    message_template = Template('''
-        [
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "$greeting"
-                }
-            },
-            {
-                "type": "divider"
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "$post"
-                }
-            }
-	    ]
-    ''')
+    message_template = Template('$greeting\n$divider\n$post')
 
     def generate_message(self, month, admin):
         month_name = datetime.strptime(str(month), '%m').strftime('%B')
@@ -49,6 +30,7 @@ class BirthdayPostWriter(ABC):
         return BirthdayPostWriter.message_template.substitute(
             dict(
                 greeting = BirthdayPostWriter.draft_greeting,
+                divider = BirthdayPostWriter.divider,
                 post = draft_post
             )
         )
