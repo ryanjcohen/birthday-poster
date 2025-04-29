@@ -23,7 +23,7 @@ def send_draft_message():
     next_month = (datetime.now().month % 12) + 1
 
     try:
-        message = birthday_poster.generate_message(next_month, config.admin_name)
+        message = birthday_poster.generate_message(next_month)
     except BirthdayReadingError as err:
         print(err.message)
         return

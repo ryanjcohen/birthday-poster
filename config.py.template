@@ -1,5 +1,4 @@
 bot_user_oauth_token = ''
-admin_name = ''
 output_id = ''
 
 #---CONFIGURATION FOR READING BIRTHDAYS FROM CSV FILE---#

@@ -9,22 +9,22 @@ class BirthdayPostWriter(ABC):
     draft_greeting = '*Here\'s a draft birthday post for next month:*'
     divider = '===================='
     post_beginning = 'Hey Band! Happy Birthday to the following folks this month:'
-    post_ending = '_If your birthday is in the month of {month} and your name is not on this list above, please DM {admin}!_'
-    post_no_birthdays = 'Hey Band! There are no recorded birthdays this month!\n_If your birthday is in the month of {month}, please DM {admin}!_'
+    post_ending = '_If your birthday is in the month of {month} and your name is not on this list above, please DM me!_'
+    post_no_birthdays = 'Hey Band! There are no recorded birthdays this month!\n_If your birthday is in the month of {month}, please DM me!_'
     message_template = Template('$greeting\n$divider\n$post')
 
-    def generate_message(self, month, admin):
+    def generate_message(self, month):
         month_name = datetime.strptime(str(month), '%m').strftime('%B')
         birthdays = self.read_birthdays_for_month(month_name)
         
         birthday_list = self.create_birthday_list(month_name, birthdays)
         if len(birthday_list) == 0:
-            draft_post = BirthdayPostWriter.post_no_birthdays.format(month=month_name, admin=admin)
+            draft_post = BirthdayPostWriter.post_no_birthdays.format(month=month_name)
         else:
             draft_post = '\n\n'.join([
                 BirthdayPostWriter.post_beginning,
                 '\n'.join(birthday_list),
-                BirthdayPostWriter.post_ending.format(month=month_name, admin=admin)
+                BirthdayPostWriter.post_ending.format(month=month_name)
             ])
 
         return BirthdayPostWriter.message_template.substitute(
