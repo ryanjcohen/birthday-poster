@@ -1,6 +1,8 @@
 config.py
 .DS_Store
 .vscode/
+# Local state tracking for monthly birthday post automation
+.monthly-last-run
 
 # Google drive api secret/token files
 credentials.json

@@ -1,16 +1,23 @@
+from pathlib import Path
+
 bot_user_oauth_token = ''
 output_id = ''
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
 #---CONFIGURATION FOR READING BIRTHDAYS FROM CSV FILE---#
-csv_file = ''
+csv_file = PROJECT_ROOT / ''
 
 #---CONFIGURATION FOR READING BIRTHDAYS FROM GOOGLE DRIVE---#
 birthday_sheet_id = ''
 range = ''
+
 # path to file for storing access and refresh tokens for Drive API
-token_path = ''
+token_path = PROJECT_ROOT / ''
+
 # path to directory storing credentials for use with Drive API
-credentials_path = ''
+credentials_path = PROJECT_ROOT / ''
+
 # indices of columns within the specified range that contain first names, last names, and birthdays
 first_name_col_idx = -1
 last_name_col_idx = -1

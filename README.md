@@ -28,3 +28,7 @@ Basic slackbot that sends a draft birthday post for the next month to a configur
   ```
   python3 script.py -gdrive
   ```
+
+A Bash script (`monthly.sh`) in the `scripts` directory is provided to support automated monthly birthday post generation using the configured Google Sheet.
+
+The script uses the project's pre-created venv for Python dependencies and updates its state file only after successful execution.
